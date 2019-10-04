@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Wikipedia Speech</string>
+    <string name="action_settings">Settings</string>
+</resources>
