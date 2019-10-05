@@ -168,8 +168,18 @@ class PageActivity : AppCompatActivity() {
         speechNext()
     }
 
+    private fun finishedSpeech() {
+        enableStart()
+        speechProgress = -1
+        startSpeech(getString(R.string.finished))
+    }
+
     private fun speechNext() {
         speechProgress += 1
+        if (speechProgress == wikipediaDocument.speechTexts().size) {
+            finishedSpeech()
+            return
+        }
         log("iteretion: ${speechProgress}")
         startSpeech(wikipediaDocument.speechTexts()[speechProgress])
     }
