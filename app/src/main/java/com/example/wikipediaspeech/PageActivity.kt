@@ -13,6 +13,8 @@ import org.jsoup.nodes.Document
 import java.util.logging.Level
 import java.util.logging.LogRecord
 import java.util.logging.Logger
+import android.speech.tts.UtteranceProgressListener
+import androidx.core.view.isVisible
 
 class PageActivity : AppCompatActivity() {
     companion object {
@@ -25,6 +27,7 @@ class PageActivity : AppCompatActivity() {
 
     private lateinit var name: String
     private lateinit var wikipediaDocument: WikipediaDocument
+    private var speechProgress: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +39,6 @@ class PageActivity : AppCompatActivity() {
 
         setToolbar(name)
         setClickLisnter()
-        initSpeech()
         loadPage(url)
     }
 
@@ -45,14 +47,13 @@ class PageActivity : AppCompatActivity() {
         loader = WebpageLoader(context, object : WebpageLoader.LoadListener {
 
             override fun onStartLoad() {
-                textToSpeech.stop()
             }
 
             override fun onFinishLoad(document: Document) {
                 wikipediaDocument = WikipediaDocument(context, document)
-                play.show()
                 page_title.text = wikipediaDocument.title()
                 page_body.text = wikipediaDocument.body()
+                initSpeech()
             }
         })
         loader.loadUrl(url)
@@ -73,16 +74,12 @@ class PageActivity : AppCompatActivity() {
         }
     }
 
-    private fun speechText(): String {
-        return wikipediaDocument.speechText()
-    }
-
     private fun setClickLisnter() {
         play.setOnClickListener {
-            startSpeech(speechText())
+            startSpeechDocument()
         }
         stop.setOnClickListener {
-            stopSpeech()
+            pauseSpeech()
         }
     }
 
@@ -93,18 +90,82 @@ class PageActivity : AppCompatActivity() {
                 if (textToSpeech.isLanguageAvailable(locale) >= TextToSpeech.LANG_AVAILABLE) {
                     textToSpeech.language = locale
                 }
+                enableStart()
             }
         })
+
+        // https://akira-watson.com/android/tts.html
+        val listenerResult =
+            textToSpeech.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                override fun onDone(utteranceId: String) {
+                    log("progress on Done $utteranceId")
+                    speechNext()
+                }
+
+                override fun onError(utteranceId: String) {
+                    log("progress on Error $utteranceId. (parent class)")
+                }
+
+                override fun onError(utteranceId: String, errorCode: Int) {
+                    speechProgress -= 1
+                    log("progress on Error $utteranceId, ${errorCode}")
+                    enableStart()
+                }
+
+                override fun onStop(utteranceId: String, interrupted: Boolean) {
+                    log("progress on Stop $utteranceId, interrupted: ${interrupted}")
+                    if (interrupted) {
+                        speechProgress -= 1
+                    }
+                    enableStart()
+                }
+
+                override fun onStart(utteranceId: String) {
+                    log("progress on Start $utteranceId")
+                    disableStart()
+                }
+            })
+        if (listenerResult != TextToSpeech.SUCCESS) {
+            log("failed to add utterance progress listener");
+        }
+    }
+
+    private fun enableStart() {
+        runOnUiThread {
+            play.show()
+            stop.hide()
+        }
+    }
+
+    private fun disableStart() {
+        runOnUiThread {
+            play.hide()
+            stop.show()
+        }
+    }
+
+    private fun pauseSpeech() {
+        log("pauseSpeech()")
+        stopSpeech()
     }
 
     private fun stopSpeech() {
-        log("stopSpeech()")
-        play.show()
-        stop.hide()
         if (textToSpeech.isSpeaking) {
             log("is speaking.")
             textToSpeech.stop()
+        } else {
+            enableStart()
         }
+    }
+
+    private fun startSpeechDocument() {
+        speechNext()
+    }
+
+    private fun speechNext() {
+        speechProgress += 1
+        log("iteretion: ${speechProgress}")
+        startSpeech(wikipediaDocument.speechTexts()[speechProgress])
     }
 
     private fun startSpeech(text: String) {
@@ -112,8 +173,6 @@ class PageActivity : AppCompatActivity() {
         log("startSpeech(). length: ${text.length}")
 
         if (text.isNotEmpty()) {
-            play.hide()
-            stop.show()
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, SPEECH_ID)
         }
     }
