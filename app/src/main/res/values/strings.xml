@@ -11,4 +11,5 @@
     <string name="wikipedia_body_text_edit">[編集]</string>
     <string name="wikipedia_title_pivot"> - </string>
     <string name="wikipedia_name_default">Special:Randompage</string>
+    <string name="default_error_message">An error occurred.</string>
 </resources>

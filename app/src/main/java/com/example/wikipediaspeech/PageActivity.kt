@@ -14,7 +14,7 @@ import java.util.logging.Level
 import java.util.logging.LogRecord
 import java.util.logging.Logger
 import android.speech.tts.UtteranceProgressListener
-import androidx.core.view.isVisible
+import android.widget.Toast
 
 class PageActivity : AppCompatActivity() {
     companion object {
@@ -49,7 +49,11 @@ class PageActivity : AppCompatActivity() {
             override fun onStartLoad() {
             }
 
-            override fun onFinishLoad(document: Document) {
+            override fun onFinishLoad(document: Document?, err: Exception?) {
+                if (document == null) {
+                    showError(err?.message)
+                    return
+                }
                 wikipediaDocument = WikipediaDocument(context, document)
                 page_title.text = wikipediaDocument.title()
                 page_body.text = wikipediaDocument.body()
@@ -184,6 +188,11 @@ class PageActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item!!)
+    }
+
+    private fun showError(message: String?) {
+        Toast.makeText(this, message ?: getString(R.string.default_error_message), Toast.LENGTH_LONG)
+            .show()
     }
 
     private fun log(message: String) {
