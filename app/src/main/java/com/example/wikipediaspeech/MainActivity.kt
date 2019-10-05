@@ -12,17 +12,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
-        setClickLisnter()
-    }
-
-    private fun setClickLisnter() {
-        plus.setOnClickListener { view ->
-            val intent = Intent(this, PageActivity::class.java).apply {
-                putExtra(PageActivity.EXTRA_PAGE_NAME, getString(R.string.no_selection))
-            }
-            startActivity(intent)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
