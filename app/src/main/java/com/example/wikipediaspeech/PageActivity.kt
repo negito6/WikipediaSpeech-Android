@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import java.util.*
 
+import kotlinx.android.synthetic.main.activity_page.*
+
 class PageActivity : AppCompatActivity() {
     companion object {
         private const val SPEECH_ID = "12345678"
