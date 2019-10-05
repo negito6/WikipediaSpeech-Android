@@ -13,15 +13,18 @@ class PageActivity : AppCompatActivity() {
     companion object {
         private const val SPEECH_ID = "12345678"
         const val EXTRA_PAGE_NAME = "key_page_name"
+        const val EXTRA_PAGE_TEXT = "key_page_text"
     }
 
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var title: String
+    private lateinit var text: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         title = intent.getStringExtra(EXTRA_PAGE_NAME)
+        text = intent.getStringExtra(EXTRA_PAGE_TEXT)
 
         setContentView(R.layout.activity_page)
 
@@ -47,6 +50,7 @@ class PageActivity : AppCompatActivity() {
     private fun setClickLisnter() {
         play.setOnClickListener { view ->
             startSpeech(title)
+            startSpeech(text)
         }
         stop.setOnClickListener { view ->
             stopSpeech()
