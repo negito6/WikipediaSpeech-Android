@@ -5,10 +5,17 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.speech.tts.TextToSpeech
 
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        private const val SPEECH_ID = "12345678"
+    }
+
+    private lateinit var textToSpeech: TextToSpeech
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,12 +23,34 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         setClickLisnter()
+        initSpeech()
     }
 
     private fun setClickLisnter() {
-        plus.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        play.setOnClickListener { view ->
+            talkText(getString(R.string.no_selection))
+        }
+    }
+
+    private fun initSpeech() {
+        textToSpeech = TextToSpeech(this, TextToSpeech.OnInitListener { status ->
+            if (TextToSpeech.SUCCESS == status) {
+                val locale = Locale.JAPANESE
+                if (textToSpeech.isLanguageAvailable(locale) >= TextToSpeech.LANG_AVAILABLE) {
+                    textToSpeech.language = locale
+                }
+            }
+        })
+    }
+
+    private fun talkText(text: String) {
+        if (text.isNotEmpty()) {
+            if (textToSpeech.isSpeaking) {
+                textToSpeech.stop()
+            }
+
+            // start speech
+            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, SPEECH_ID)
         }
     }
 
