@@ -25,7 +25,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun inputText(): String {
-        return getString(R.string.wikipedia_name_default)
+        input_title.selectAll()
+        return input_title.getText().toString()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
