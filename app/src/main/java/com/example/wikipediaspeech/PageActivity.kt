@@ -79,7 +79,6 @@ class PageActivity : AppCompatActivity() {
 
     private fun setClickLisnter() {
         play.setOnClickListener {
-            log(speechText())
             startSpeech(speechText())
         }
         stop.setOnClickListener {
@@ -103,6 +102,7 @@ class PageActivity : AppCompatActivity() {
         play.show()
         stop.hide()
         if (textToSpeech.isSpeaking) {
+            log("is speaking.")
             textToSpeech.stop()
         }
     }
