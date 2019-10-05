@@ -4,18 +4,26 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
 class WikipediaDocument(val document: Document) {
+    companion object {
+        private const val BODY_DELIMITER = "。"
+        private const val TITLE_DELIMITER = " - "
+        private const val BODY_DOM_ID = "mw-content-text"
+        private val BODY_DOM_UNREADABLE_CLASSES = listOf<String>("mw-editsection", "reference", "toc", "reflist")
+        private val BODY_DOM_UNREADABLE_TAGS = listOf<String>("table", "dl")
+    }
+
     fun bodyDom(): Element {
-        return document.getElementById("mw-content-text")
+        return document.getElementById(BODY_DOM_ID)
     }
 
     fun readableBody(): String {
         val dom = bodyDom()
-        arrayOf("table", "dl").forEach { name ->
+        BODY_DOM_UNREADABLE_TAGS.forEach { name ->
             dom.getElementsByTag(name).forEach { elem ->
                 elem.remove()
             }
         }
-        arrayOf("mw-editsection", "reference", "toc", "reflist").forEach { name ->
+        BODY_DOM_UNREADABLE_CLASSES.forEach { name ->
             dom.getElementsByClass(name).forEach { elem ->
                 elem.remove()
             }
@@ -24,11 +32,11 @@ class WikipediaDocument(val document: Document) {
     }
 
     fun contents(): List<String> {
-        return readableBody().split("。")
+        return readableBody().split(BODY_DELIMITER)
     }
 
     fun title(): String {
-        return document.title().split(" - ")[0]
+        return document.title().split(TITLE_DELIMITER)[0]
     }
 
     fun speechTexts(): List<String> {
