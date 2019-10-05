@@ -1,56 +1,27 @@
 package com.example.wikipediaspeech
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.speech.tts.TextToSpeech
 
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    companion object {
-        private const val SPEECH_ID = "12345678"
-    }
-
-    private lateinit var textToSpeech: TextToSpeech
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
         setClickLisnter()
-        initSpeech()
     }
 
     private fun setClickLisnter() {
-        play.setOnClickListener { view ->
-            talkText(getString(R.string.no_selection))
-        }
-    }
-
-    private fun initSpeech() {
-        textToSpeech = TextToSpeech(this, TextToSpeech.OnInitListener { status ->
-            if (TextToSpeech.SUCCESS == status) {
-                val locale = Locale.JAPANESE
-                if (textToSpeech.isLanguageAvailable(locale) >= TextToSpeech.LANG_AVAILABLE) {
-                    textToSpeech.language = locale
-                }
+        plus.setOnClickListener { view ->
+            val intent = Intent(this, PageActivity::class.java).apply {
+                putExtra(PageActivity.EXTRA_PAGE_NAME, getString(R.string.no_selection))
             }
-        })
-    }
-
-    private fun talkText(text: String) {
-        if (text.isNotEmpty()) {
-            if (textToSpeech.isSpeaking) {
-                textToSpeech.stop()
-            }
-
-            // start speech
-            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, SPEECH_ID)
+            startActivity(intent)
         }
     }
 
