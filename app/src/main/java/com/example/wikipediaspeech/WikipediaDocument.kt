@@ -4,10 +4,6 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
 class WikipediaDocument(val document: Document) {
-    fun body(): String {
-        return bodyDom().text()
-    }
-
     fun bodyDom(): Element {
         return document.getElementById("mw-content-text")
     }
