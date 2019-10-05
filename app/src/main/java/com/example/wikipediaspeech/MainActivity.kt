@@ -9,6 +9,9 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        private const val WIKIPEDIA_NAME_DEFAULT = "Special:Randompage"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     private fun inputText(): String {
         input_title.selectAll()
         val input = input_title.getText().toString()
-        return if (input.length > 0) input else getString(R.string.wikipedia_name_default)
+        return if (input.length > 0) input else WIKIPEDIA_NAME_DEFAULT
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

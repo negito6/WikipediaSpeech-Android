@@ -1,12 +1,15 @@
 package com.example.wikipediaspeech
 
-import android.content.Context
 import android.os.AsyncTask
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.util.*
 
-class WebpageLoader(private val context: Context, private val listener: LoadListener) {
+class WebpageLoader(private val listener: LoadListener) {
+    companion object {
+        private const val USER_AGENT_IE11 = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; rv:11.0) like Gecko"
+
+    }
         private lateinit var loader: Loader
         private var err: Exception? = null
 
@@ -33,7 +36,7 @@ class WebpageLoader(private val context: Context, private val listener: LoadList
             override fun doInBackground(vararg urls: String): Document? {
                 try {
                     return Jsoup.connect(urls[0])
-                        .userAgent(context.getString(R.string.user_agent_ie11))
+                        .userAgent(USER_AGENT_IE11)
                         .followRedirects(true)
                         .get()
                 } catch (e: Exception) {

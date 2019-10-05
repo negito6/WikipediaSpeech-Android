@@ -1,29 +1,26 @@
 package com.example.wikipediaspeech
 
-import android.content.Context
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-class WikipediaDocument(val context: Context, val document: Document) {
+class WikipediaDocument(val document: Document) {
     fun body(): String {
         return bodyDom().text()
     }
 
     fun bodyDom(): Element {
-        return document.getElementById(context.getString(R.string.wikipedia_dom_id_body))
+        return document.getElementById("mw-content-text")
     }
 
     fun readableBody(): String {
         val dom = bodyDom()
         arrayOf("table", "dl").forEach { name ->
             dom.getElementsByTag(name).forEach { elem ->
-                elem.parent().insertChildren(elem.siblingIndex(), elem.childNodes())
                 elem.remove()
             }
         }
-        arrayOf("mw-editsection", "reference").forEach { name ->
+        arrayOf("mw-editsection", "reference", "toc", "reflist").forEach { name ->
             dom.getElementsByClass(name).forEach { elem ->
-                elem.parent().insertChildren(elem.siblingIndex(), elem.childNodes())
                 elem.remove()
             }
         }
@@ -31,11 +28,11 @@ class WikipediaDocument(val context: Context, val document: Document) {
     }
 
     fun contents(): List<String> {
-        return readableBody().split("\n")
+        return readableBody().split("。")
     }
 
     fun title(): String {
-        return document.title().split(context.getString(R.string.wikipedia_title_pivot))[0]
+        return document.title().split(" - ")[0]
     }
 
     fun speechTexts(): List<String> {

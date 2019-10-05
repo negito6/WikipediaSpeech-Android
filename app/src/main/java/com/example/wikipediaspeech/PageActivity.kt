@@ -18,7 +18,8 @@ import android.widget.Toast
 
 class PageActivity : AppCompatActivity() {
     companion object {
-        private const val SPEECH_ID = "12345678"
+        private const val SPEECH_ID_PAGE = "page"
+        private const val SPEECH_ID_SYSTEM = "system"
         const val EXTRA_PAGE_NAME = "key_page_name"
     }
 
@@ -44,7 +45,7 @@ class PageActivity : AppCompatActivity() {
 
     private fun loadPage(url: String) {
         val context = this
-        loader = WebpageLoader(context, object : WebpageLoader.LoadListener {
+        loader = WebpageLoader(object : WebpageLoader.LoadListener {
 
             override fun onStartLoad() {
             }
@@ -54,9 +55,9 @@ class PageActivity : AppCompatActivity() {
                     showError(err?.message)
                     return
                 }
-                wikipediaDocument = WikipediaDocument(context, document)
+                wikipediaDocument = WikipediaDocument(document)
                 page_title.text = wikipediaDocument.title()
-                page_body.text = wikipediaDocument.body()
+                page_body.text = wikipediaDocument.readableBody()
                 initSpeech()
             }
         })
@@ -104,22 +105,26 @@ class PageActivity : AppCompatActivity() {
         val listenerResult =
             textToSpeech.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                 override fun onDone(utteranceId: String) {
-                    log("progress on Done $utteranceId")
-                    speechNext()
+                    log("progress on Done. id: $utteranceId")
+                    if (utteranceId == SPEECH_ID_PAGE) {
+                        speechNext()
+                    } else {
+                        enableStart()
+                    }
                 }
 
                 override fun onError(utteranceId: String) {
-                    log("progress on Error $utteranceId. (parent class)")
+                    log("progress on Error. id: $utteranceId. (parent class)")
                 }
 
                 override fun onError(utteranceId: String, errorCode: Int) {
                     speechProgress -= 1
-                    log("progress on Error $utteranceId, ${errorCode}")
+                    log("progress on Error. id: $utteranceId, ${errorCode}")
                     enableStart()
                 }
 
                 override fun onStop(utteranceId: String, interrupted: Boolean) {
-                    log("progress on Stop $utteranceId, interrupted: ${interrupted}")
+                    log("progress on Stop. id: $utteranceId, interrupted: ${interrupted}")
                     if (interrupted) {
                         speechProgress -= 1
                     }
@@ -169,27 +174,28 @@ class PageActivity : AppCompatActivity() {
     }
 
     private fun finishedSpeech() {
-        enableStart()
         speechProgress = -1
-        startSpeech(getString(R.string.finished))
+        startSpeech(getString(R.string.finished), SPEECH_ID_SYSTEM)
+        log(wikipediaDocument.readableBody())
+        enableStart()
     }
 
     private fun speechNext() {
         speechProgress += 1
+        log("iteretion: ${speechProgress}")
         if (speechProgress == wikipediaDocument.speechTexts().size) {
             finishedSpeech()
             return
         }
-        log("iteretion: ${speechProgress}")
-        startSpeech(wikipediaDocument.speechTexts()[speechProgress])
+        startSpeech(wikipediaDocument.speechTexts()[speechProgress], SPEECH_ID_PAGE)
     }
 
-    private fun startSpeech(text: String) {
+    private fun startSpeech(text: String, id: String) {
         stopSpeech()
         log("startSpeech(). length: ${text.length}")
 
         if (text.isNotEmpty()) {
-            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, SPEECH_ID)
+            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, id)
         }
     }
 
