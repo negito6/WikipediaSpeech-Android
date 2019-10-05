@@ -65,7 +65,9 @@ class PageActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        textToSpeech.shutdown()
+        if (::textToSpeech.isInitialized) {
+            textToSpeech.shutdown()
+        }
         loader.cancel()
     }
 
