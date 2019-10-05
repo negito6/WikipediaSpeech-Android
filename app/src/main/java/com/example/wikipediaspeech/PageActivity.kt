@@ -30,6 +30,11 @@ class PageActivity : AppCompatActivity() {
         initSpeech()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        textToSpeech.shutdown()
+    }
+
     private fun setToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.let {
