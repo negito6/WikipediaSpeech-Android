@@ -8,6 +8,7 @@ import java.util.*
 
 import kotlinx.android.synthetic.main.activity_page.*
 import kotlinx.android.synthetic.main.activity_page.toolbar
+import kotlinx.android.synthetic.main.content_main.*
 import org.jsoup.nodes.Document
 import java.util.logging.Level
 import java.util.logging.LogRecord
@@ -22,7 +23,7 @@ class PageActivity : AppCompatActivity() {
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var loader: WebpageLoader
 
-    private lateinit var title: String
+    private lateinit var name: String
     private lateinit var wikipediaDocument: WikipediaDocument
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,10 +32,9 @@ class PageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_page)
 
         val name = intent.getStringExtra(EXTRA_PAGE_NAME)
-        title = name // TODO: temp
         val url = "https://ja.wikipedia.org/wiki/" + name
 
-        setToolbar()
+        setToolbar(name)
         setClickLisnter()
         initSpeech()
         loadPage(url)
@@ -51,6 +51,8 @@ class PageActivity : AppCompatActivity() {
             override fun onFinishLoad(document: Document) {
                 wikipediaDocument = WikipediaDocument(context, document)
                 play.show()
+                page_title.text = wikipediaDocument.title()
+                page_body.text = wikipediaDocument.body()
             }
         })
         loader.loadUrl(url)
@@ -62,7 +64,7 @@ class PageActivity : AppCompatActivity() {
         loader.cancel()
     }
 
-    private fun setToolbar() {
+    private fun setToolbar(title: String) {
         setSupportActionBar(toolbar)
         supportActionBar?.let {
             it.setTitle(title)
