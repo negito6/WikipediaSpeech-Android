@@ -18,11 +18,14 @@ class MainActivity : AppCompatActivity() {
     private fun setClickLisnter() {
         submit.setOnClickListener { view ->
             val intent = Intent(this, PageActivity::class.java).apply {
-                putExtra(PageActivity.EXTRA_PAGE_NAME, getString(R.string.no_selection))
-                putExtra(PageActivity.EXTRA_PAGE_TEXT, getString(R.string.no_selection))
+                putExtra(PageActivity.EXTRA_PAGE_NAME, inputText())
             }
             startActivity(intent)
         }
+    }
+
+    private fun inputText(): String {
+        return getString(R.string.wikipedia_name_default)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

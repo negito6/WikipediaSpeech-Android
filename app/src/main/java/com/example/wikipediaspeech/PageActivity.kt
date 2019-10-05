@@ -8,51 +8,79 @@ import java.util.*
 
 import kotlinx.android.synthetic.main.activity_page.*
 import kotlinx.android.synthetic.main.activity_page.toolbar
+import org.jsoup.nodes.Document
+import java.util.logging.Level
+import java.util.logging.LogRecord
+import java.util.logging.Logger
 
 class PageActivity : AppCompatActivity() {
     companion object {
         private const val SPEECH_ID = "12345678"
         const val EXTRA_PAGE_NAME = "key_page_name"
-        const val EXTRA_PAGE_TEXT = "key_page_text"
     }
 
     private lateinit var textToSpeech: TextToSpeech
+    private lateinit var loader: WebpageLoader
+
     private lateinit var title: String
-    private lateinit var text: String
+    private lateinit var wikipediaDocument: WikipediaDocument
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        title = intent.getStringExtra(EXTRA_PAGE_NAME)
-        text = intent.getStringExtra(EXTRA_PAGE_TEXT)
-
         setContentView(R.layout.activity_page)
+
+        val name = intent.getStringExtra(EXTRA_PAGE_NAME)
+        title = name // TODO: temp
+        val url = "https://ja.wikipedia.org/wiki/" + name
 
         setToolbar()
         setClickLisnter()
         initSpeech()
+        loadPage(url)
+    }
+
+    private fun loadPage(url: String) {
+        val context = this
+        loader = WebpageLoader(context, object : WebpageLoader.LoadListener {
+
+            override fun onStartLoad() {
+                textToSpeech.stop()
+            }
+
+            override fun onFinishLoad(document: Document) {
+                wikipediaDocument = WikipediaDocument(context, document)
+                play.show()
+            }
+        })
+        loader.loadUrl(url)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         textToSpeech.shutdown()
+        loader.cancel()
     }
 
     private fun setToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.let {
-            it.setTitle(title);
-            it.setDisplayShowHomeEnabled(true);
-            it.setDisplayHomeAsUpEnabled(true);
+            it.setTitle(title)
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
         }
     }
 
+    private fun speechText(): String {
+        return wikipediaDocument.speechText()
+    }
+
     private fun setClickLisnter() {
-        play.setOnClickListener { view ->
-            startSpeech(title)
-            startSpeech(text)
+        play.setOnClickListener {
+            log(speechText())
+            startSpeech(speechText())
         }
-        stop.setOnClickListener { view ->
+        stop.setOnClickListener {
             stopSpeech()
         }
     }
@@ -69,6 +97,9 @@ class PageActivity : AppCompatActivity() {
     }
 
     private fun stopSpeech() {
+        log("stopSpeech()")
+        play.show()
+        stop.hide()
         if (textToSpeech.isSpeaking) {
             textToSpeech.stop()
         }
@@ -76,8 +107,11 @@ class PageActivity : AppCompatActivity() {
 
     private fun startSpeech(text: String) {
         stopSpeech()
+        log("startSpeech(). length: ${text.length}")
 
         if (text.isNotEmpty()) {
+            play.hide()
+            stop.show()
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, SPEECH_ID)
         }
     }
@@ -89,5 +123,9 @@ class PageActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item!!)
+    }
+
+    private fun log(message: String) {
+        Logger.getLogger("PageActivity").log(LogRecord(Level.INFO, message))
     }
 }

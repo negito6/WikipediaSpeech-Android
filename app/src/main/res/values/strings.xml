@@ -5,4 +5,8 @@
     <string name="title_activity_main">Wikipedia Search</string>
     <string name="prompt_title">Title</string>
     <string name="submit">Search</string>
+    <string name="user_agent_ie11">Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; Touch; rv:11.0) like Gecko</string>
+    <string name="wikipedia_dom_id_body">mw-content-text</string>
+    <string name="wikipedia_title_pivot"> - </string>
+    <string name="wikipedia_name_default">Special:Randompage</string>
 </resources>
