@@ -26,7 +26,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun inputText(): String {
         input_title.selectAll()
-        return input_title.getText().toString()
+        val input = input_title.getText().toString()
+        return if (input.length > 0) input else getString(R.string.wikipedia_name_default)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
