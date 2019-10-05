@@ -12,12 +12,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setClickLisnter()
+    }
+
+    private fun setClickLisnter() {
+        submit.setOnClickListener { view ->
+            val intent = Intent(this, PageActivity::class.java).apply {
+                putExtra(PageActivity.EXTRA_PAGE_NAME, getString(R.string.no_selection))
+                putExtra(PageActivity.EXTRA_PAGE_TEXT, getString(R.string.no_selection))
+            }
+            startActivity(intent)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         return false
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
