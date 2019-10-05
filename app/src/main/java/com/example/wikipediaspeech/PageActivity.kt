@@ -3,9 +3,11 @@ package com.example.wikipediaspeech
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.view.MenuItem
 import java.util.*
 
 import kotlinx.android.synthetic.main.activity_page.*
+import kotlinx.android.synthetic.main.activity_page.toolbar
 
 class PageActivity : AppCompatActivity() {
     companion object {
@@ -14,20 +16,32 @@ class PageActivity : AppCompatActivity() {
     }
 
     private lateinit var textToSpeech: TextToSpeech
+    private lateinit var title: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        title = intent.getStringExtra(EXTRA_PAGE_NAME)
+
         setContentView(R.layout.activity_page)
 
-        intent.getStringExtra(EXTRA_PAGE_NAME)
-
+        setToolbar()
         setClickLisnter()
         initSpeech()
     }
 
+    private fun setToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.let {
+            it.setTitle(title);
+            it.setDisplayShowHomeEnabled(true);
+            it.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
     private fun setClickLisnter() {
         play.setOnClickListener { view ->
-            startSpeech(getString(R.string.no_selection))
+            startSpeech(title)
         }
         stop.setOnClickListener { view ->
             stopSpeech()
@@ -57,5 +71,14 @@ class PageActivity : AppCompatActivity() {
         if (text.isNotEmpty()) {
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, SPEECH_ID)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> {
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item!!)
     }
 }
