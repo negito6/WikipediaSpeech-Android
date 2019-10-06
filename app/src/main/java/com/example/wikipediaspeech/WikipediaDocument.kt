@@ -9,7 +9,7 @@ class WikipediaDocument(val document: Document) {
         private const val BODY_DELIMITER = "。"
         private const val TITLE_DELIMITER = " - "
         private const val BODY_DOM_ID = "mw-content-text"
-        private val BODY_DOM_UNREADABLE_CLASSES = listOf<String>("mw-editsection", "reference", "toc", "reflist", "references-small")
+        private val BODY_DOM_UNREADABLE_CLASSES = listOf<String>("mw-editsection", "reference", "references", "toc", "reflist", "references-small")
         private val BODY_DOM_UNREADABLE_TAGS = listOf<String>("table")
         private val BODY_DOM_CHILDREN_LINE_TAGS = listOf<String>("ul", "ol", "dl")
         private val BODY_DOM_UNREADABLE_IDS = listOf<String>("infoboxCountry")
