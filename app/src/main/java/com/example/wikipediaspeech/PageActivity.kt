@@ -8,7 +8,7 @@ import java.util.*
 
 import kotlinx.android.synthetic.main.activity_page.*
 import kotlinx.android.synthetic.main.activity_page.toolbar
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.content_page.*
 import org.jsoup.nodes.Document
 import java.util.logging.Level
 import java.util.logging.LogRecord
