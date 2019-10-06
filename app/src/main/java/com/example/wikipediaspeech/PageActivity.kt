@@ -62,9 +62,21 @@ class PageActivity : AppCompatActivity() {
         listView.setOnItemClickListener(object : OnItemClickListener {
             override fun onItemClick(adapter: AdapterView<*>, view: View, position: Int, itemId: Long) {
                 log("Clicked: " + position.toString())
-                speechProgress = position
+                if (!textToSpeech.isSpeaking) {
+                    activate(position)
+                }
             }
         })
+    }
+
+    private fun deactivate() {
+        // reset background color
+    }
+
+    private fun activate(position: Int) {
+        deactivate()
+        speechProgress = position
+        // set background color if position > 0
     }
 
     private fun loadPage(url: String) {
@@ -204,7 +216,7 @@ class PageActivity : AppCompatActivity() {
     }
 
     private fun speechNext() {
-        speechProgress += 1
+        activate(speechProgress + 1)
         log("iteretion: ${speechProgress}")
         if (speechProgress == wikipediaDocument.speechTexts().size) {
             finishedSpeech()
