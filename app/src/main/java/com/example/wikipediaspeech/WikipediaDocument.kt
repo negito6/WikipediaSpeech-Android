@@ -36,8 +36,8 @@ class WikipediaDocument(val document: Document) {
         return dom.text()
     }
 
-    fun contents(): List<String> {
-        return readableBody().split(BODY_DELIMITER)
+    fun contents(): Array<String> {
+        return readableBody().split(BODY_DELIMITER).toTypedArray()
     }
 
     fun title(): String {
