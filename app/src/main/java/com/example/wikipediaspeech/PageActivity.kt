@@ -17,6 +17,9 @@ import android.speech.tts.UtteranceProgressListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
+import android.view.View
 
 class PageActivity : AppCompatActivity() {
     companion object {
@@ -56,6 +59,12 @@ class PageActivity : AppCompatActivity() {
         }
         val adapter = ArrayAdapter(this, R.layout.line_item, listItems)
         listView.adapter = adapter
+        listView.setOnItemClickListener(object : OnItemClickListener {
+            override fun onItemClick(adapter: AdapterView<*>, view: View, position: Int, itemId: Long) {
+                log("Clicked: " + position.toString())
+                speechProgress = position
+            }
+        })
     }
 
     private fun loadPage(url: String) {
