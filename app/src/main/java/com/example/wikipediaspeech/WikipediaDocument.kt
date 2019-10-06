@@ -43,7 +43,7 @@ class WikipediaDocument(val document: Document) {
     fun contents(): Array<String> {
         var elements = listOf<Element>()
         readableBody().children().forEach { element ->
-            if (element.tagName().toLowerCase(Locale.ENGLISH) == "ul") {
+            if (BODY_DOM_CHILDREN_LINE_TAGS.indexOf(element.tagName().toLowerCase(Locale.ENGLISH)) >= 0) {
                 elements = elements + element.children()
             } else {
                 elements = elements + element
