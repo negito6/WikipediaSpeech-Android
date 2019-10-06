@@ -31,7 +31,10 @@ class WikipediaDocument(val document: Document) {
         }
 
         BODY_DOM_UNREADABLE_IDS.forEach { name ->
-            dom.getElementById(name).remove()
+            val element = dom.getElementById(name)
+            if (element != null) {
+                element.remove()
+            }
         }
         return dom.text()
     }
