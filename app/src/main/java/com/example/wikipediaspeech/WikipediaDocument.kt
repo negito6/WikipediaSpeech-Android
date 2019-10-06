@@ -14,10 +14,10 @@ class WikipediaDocument(val document: Document) {
     }
 
     fun bodyDom(): Element {
-        return document.getElementById(BODY_DOM_ID)
+        return document.getElementById(BODY_DOM_ID).children().first()
     }
 
-    fun readableBody(): String {
+    fun readableBody(): Element {
         val dom = bodyDom()
         BODY_DOM_UNREADABLE_TAGS.forEach { name ->
             dom.getElementsByTag(name).forEach { elem ->
@@ -36,11 +36,18 @@ class WikipediaDocument(val document: Document) {
                 element.remove()
             }
         }
-        return dom.text()
+        return dom
     }
 
     fun contents(): Array<String> {
-        return readableBody().split(BODY_DELIMITER).toTypedArray()
+        var list = listOf<String>()
+        readableBody().children().forEach { element ->
+            val text = element.text()
+            if (text.isNotEmpty()) {
+                list = list + text.split(BODY_DELIMITER).filter { it.isNotEmpty() }
+            }
+        }
+        return list.toTypedArray()
     }
 
     fun title(): String {

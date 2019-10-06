@@ -211,7 +211,7 @@ class PageActivity : AppCompatActivity() {
     private fun finishedSpeech() {
         speechProgress = -1
         startSpeech(getString(R.string.finished), SPEECH_ID_SYSTEM)
-        log(wikipediaDocument.readableBody())
+        log(wikipediaDocument.readableBody().text())
         enableStart()
     }
 
