@@ -77,6 +77,9 @@ class PageActivity : AppCompatActivity() {
         deactivate()
         speechProgress = position
         // set background color if position > 0
+        runOnUiThread {
+            current_index.text = speechProgress.toString() + " / " + wikipediaDocument.speechTexts().size.toString()
+        }
     }
 
     private fun loadPage(url: String) {
@@ -92,6 +95,7 @@ class PageActivity : AppCompatActivity() {
                 }
                 wikipediaDocument = WikipediaDocument(document)
                 page_title.text = wikipediaDocument.title()
+                current_index.text = "0 / " + wikipediaDocument.speechTexts().size.toString()
                 setListView(wikipediaDocument)
                 initSpeech()
             }
