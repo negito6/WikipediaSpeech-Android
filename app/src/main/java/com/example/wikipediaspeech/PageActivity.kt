@@ -44,7 +44,6 @@ class PageActivity : AppCompatActivity() {
     }
 
     private fun loadPage(url: String) {
-        val context = this
         loader = WebpageLoader(object : WebpageLoader.LoadListener {
 
             override fun onStartLoad() {
