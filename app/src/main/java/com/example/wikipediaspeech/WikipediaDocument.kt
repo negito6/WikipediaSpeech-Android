@@ -2,6 +2,7 @@ package com.example.wikipediaspeech
 
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import java.util.*
 
 class WikipediaDocument(val document: Document) {
     companion object {
@@ -40,8 +41,16 @@ class WikipediaDocument(val document: Document) {
     }
 
     fun contents(): Array<String> {
-        var list = listOf<String>()
+        var elements = listOf<Element>()
         readableBody().children().forEach { element ->
+            if (element.tagName().toLowerCase(Locale.ENGLISH) == "ul") {
+                elements = elements + element.children()
+            } else {
+                elements = elements + element
+            }
+        }
+        var list = listOf<String>()
+        elements.forEach { element ->
             val text = element.text()
             if (text.isNotEmpty()) {
                 list = list + text.split(BODY_DELIMITER).filter { it.isNotEmpty() }
