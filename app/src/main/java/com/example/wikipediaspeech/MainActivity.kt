@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setClickLisnter() {
-        submit.setOnClickListener { view ->
+        submit.setOnClickListener {
             val intent = Intent(this, PageActivity::class.java).apply {
                 putExtra(PageActivity.EXTRA_PAGE_NAME, inputText())
             }
@@ -31,19 +31,5 @@ class MainActivity : AppCompatActivity() {
         input_title.selectAll()
         val input = input_title.getText().toString()
         return if (input.length > 0) input else WIKIPEDIA_NAME_DEFAULT
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return false
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when(item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }
