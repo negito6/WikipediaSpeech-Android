@@ -31,7 +31,6 @@ class PageActivity : AppCompatActivity() {
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var loader: WebpageLoader
 
-    private lateinit var name: String
     private lateinit var wikipediaDocument: WikipediaDocument
     private var speechProgress: Int = -1
 
@@ -45,7 +44,7 @@ class PageActivity : AppCompatActivity() {
         val name = intent.getStringExtra(EXTRA_PAGE_NAME)
         val url = "https://ja.wikipedia.org/wiki/" + name
 
-        setToolbar(name)
+        setToolbar(name!!)
         setClickLisnter()
         loadPage(url)
     }
