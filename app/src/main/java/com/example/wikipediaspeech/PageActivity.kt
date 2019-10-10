@@ -1,5 +1,6 @@
 package com.example.wikipediaspeech
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
@@ -14,6 +15,7 @@ import java.util.logging.Level
 import java.util.logging.LogRecord
 import java.util.logging.Logger
 import android.speech.tts.UtteranceProgressListener
+import android.view.Menu
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
@@ -26,6 +28,7 @@ class PageActivity : AppCompatActivity() {
         private const val SPEECH_ID_PAGE = "page"
         private const val SPEECH_ID_SYSTEM = "system"
         const val EXTRA_PAGE_NAME = "key_page_name"
+        const val EXTRA_PAGE_LINK_LIST = "key_page_link_list"
     }
 
     private lateinit var textToSpeech: TextToSpeech
@@ -237,10 +240,23 @@ class PageActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_page, menu)
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
                 finish()
+            }
+            R.id.action_links -> {
+                val intent = Intent(this, LinksActivity::class.java).apply {
+                    putExtra(EXTRA_PAGE_NAME, wikipediaDocument.title())
+                    putStringArrayListExtra(EXTRA_PAGE_LINK_LIST, wikipediaDocument.links())
+                }
+                startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item!!)

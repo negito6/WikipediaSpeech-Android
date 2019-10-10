@@ -60,6 +60,14 @@ class WikipediaDocument(val document: Document) {
         return list.toTypedArray()
     }
 
+    fun links(): ArrayList<String> {
+        val links = arrayListOf<String>()
+        bodyDom().getElementsByTag("a").forEach { elem ->
+            links.add(elem.text())
+        }
+        return links
+    }
+
     fun title(): String {
         return document.title().split(TITLE_DELIMITER)[0]
     }
